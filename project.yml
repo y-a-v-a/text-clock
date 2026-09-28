@@ -1,0 +1,65 @@
+name: TextClock
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    # Ad-hoc "Sign to Run Locally". Set DEVELOPMENT_TEAM to use your own identity.
+    CODE_SIGN_IDENTITY: "-"
+packages:
+  TextClockCore:
+    path: Packages/TextClockCore
+targets:
+  TextClock:
+    type: application
+    platform: macOS
+    sources: [App]
+    dependencies:
+      - package: TextClockCore
+      - target: TextClockWidget
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Text Clock
+        LSApplicationCategoryType: public.app-category.utilities
+    entitlements:
+      path: App/TextClock.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.TextClock
+  TextClockWidget:
+    type: app-extension
+    platform: macOS
+    sources: [Widget]
+    dependencies:
+      - package: TextClockCore
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Text Clock
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widget/TextClockWidget.entitlements
+      properties:
+        # WidgetKit extensions on macOS must be sandboxed or they won't load.
+        com.apple.security.app-sandbox: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.TextClock.Widget
+schemes:
+  TextClock:
+    build:
+      targets:
+        TextClock: all
+    run:
+      config: Debug
