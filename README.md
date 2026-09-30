@@ -2,6 +2,8 @@
 
 A macOS desktop widget that tells the time in words, rounded to the nearest five minutes, in white on black.
 
+![Text Clock widget on the desktop showing “it’s twenty past one”](docs/screenshot.png)
+
 - Dutch: “het is vijf voor half twaalf”
 - English: “it’s quarter to ten”
 
@@ -22,7 +24,7 @@ open TextClock.xcodeproj
 
 Run the `TextClock` scheme once (⌘R). macOS only lists a widget after its host app has launched. Then right-click the desktop, choose “Edit Widgets…”, search for “Text Clock”, and drag it onto the desktop.
 
-Signing defaults to ad-hoc (“Sign to Run Locally”). If the widget doesn’t show up in the gallery, set your team under Signing & Capabilities for both targets (or add `DEVELOPMENT_TEAM` to `project.yml`) and change the `com.example` bundle identifiers.
+Signing uses the team set in `DEVELOPMENT_TEAM` in `project.yml`. WidgetKit won’t render an ad-hoc signed extension (it shows grey placeholder bars), so to build it yourself, change that team and the `nl.vincentbruijn` bundle identifiers to your own.
 
 To install it permanently, archive or copy the built `TextClock.app` to `/Applications` and launch it once.
 
