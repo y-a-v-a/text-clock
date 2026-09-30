@@ -2,6 +2,8 @@
 
 A macOS desktop widget that tells the time in words, rounded to the nearest five minutes, in white on black.
 
+![Text Clock widget on the desktop showing “it’s twenty past one”](docs/screenshot.png)
+
 - Dutch: “het is vijf voor half twaalf”
 - English: “it’s quarter to ten”
 
