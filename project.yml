@@ -29,6 +29,8 @@ targets:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: Text Clock
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSApplicationCategoryType: public.app-category.utilities
     entitlements:
       path: App/TextClock.entitlements
@@ -53,6 +55,8 @@ targets:
       path: Widget/Info.plist
       properties:
         CFBundleDisplayName: Text Clock
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:
