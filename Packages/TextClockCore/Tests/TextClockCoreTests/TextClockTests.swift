@@ -40,4 +40,12 @@ final class TextClockTests: XCTestCase {
         // Exactly on a boundary moves to the next one.
         XCTAssertEqual(TextClock.changeDates(after: date(10, 2, 30), count: 1, calendar: calendar), [date(10, 7, 30)])
     }
+
+    func testLanguageSetting() {
+        XCTAssertEqual(LanguageSetting.dutch.resolved, .dutch)
+        XCTAssertEqual(LanguageSetting.english.resolved, .english)
+        XCTAssertEqual(LanguageSetting.system.resolved, ClockLanguage.systemDefault)
+        // The raw values are stored in shared defaults, so they must not change.
+        XCTAssertEqual(LanguageSetting.allCases.map(\.rawValue), ["system", "dutch", "english"])
+    }
 }
