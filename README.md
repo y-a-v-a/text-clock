@@ -9,6 +9,13 @@ A macOS desktop widget that tells the time in words, rounded to the nearest five
 
 The language follows your system language by default. Change it per widget with right-click → “Edit ‘Text Clock’”.
 
+The app itself also shows the time in words:
+
+- **Menu bar:** the phrase appears among the status items (sound, Bluetooth, …). Turn it off under Settings (⌘,) or from its own menu.
+- **Clock window:** a resizable window whose text scales to fit. Turn on “Keep on Top” (Window menu, ⌥⌘T, or right-click the window) to float it above other windows on every Space, like Activity Monitor’s CPU window.
+
+The app’s language is set in Settings, separately from the widget’s.
+
 ## Install
 
 Download `TextClock.zip` from the [latest release](https://github.com/y-a-v-a/text-clock/releases/latest), unzip it, move `TextClock.app` to `/Applications` and launch it once. Then right-click the desktop, choose “Edit Widgets…”, search for “Text Clock”, and drag it onto the desktop.
@@ -40,7 +47,7 @@ To install it permanently, archive or copy the built `TextClock.app` to `/Applic
 | --- | --- |
 | `Packages/TextClockCore` | Phrasing and rounding logic, as a Swift package with tests |
 | `Widget/` | WidgetKit extension (small, medium, large) |
-| `App/` | Minimal host app with a live preview |
+| `App/` | Host app: clock window, menu bar item and settings |
 | `project.yml` | XcodeGen project spec |
 
 ## Tests
