@@ -14,6 +14,10 @@ The app itself also shows the time in words:
 - **Menu bar:** the phrase appears among the status items (sound, Bluetooth, …). Turn it off under Settings (⌘,) or from its own menu.
 - **Clock window:** a resizable window whose text scales to fit. Turn on “Keep on Top” (Window menu, ⌥⌘T, or right-click the window) to float it above other windows on every Space, like Activity Monitor’s CPU window.
 
+Settings also control how the clock window and the widgets look:
+
+- **Alignment:** left, center or right.
+
 ## Install
 
 Download `TextClock.zip` from the [latest release](https://github.com/y-a-v-a/text-clock/releases/latest), unzip it, move `TextClock.app` to `/Applications` and launch it once. Then right-click the desktop, choose “Edit Widgets…”, search for “Text Clock”, and drag it onto the desktop.

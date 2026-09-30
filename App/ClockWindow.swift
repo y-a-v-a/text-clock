@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 import TextClockCore
+import TextClockUI
 
 /// The phrase in white on black, scaled to fill the window.
 struct ClockWindowView: View {
@@ -9,14 +10,15 @@ struct ClockWindowView: View {
     @AppStorage(SharedSettings.languageKey, store: SharedSettings.defaults) private var language = LanguageSetting.system
 
     var body: some View {
-        Text(TextClock.phrase(for: clock.now, language: language.resolved))
-            .font(.system(size: 72, weight: .semibold))
-            .foregroundStyle(.white)
-            .multilineTextAlignment(.leading)
-            .minimumScaleFactor(0.1)
+        ClockFace(
+            phrase: TextClock.phrase(for: clock.now, language: language.resolved),
+            style: clock.style,
+            fontSize: 72,
+            minimumScaleFactor: 0.1
+        )
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
-            .frame(minWidth: 180, maxWidth: .infinity, minHeight: 70, maxHeight: .infinity, alignment: .leading)
+            .frame(minWidth: 180, minHeight: 70)
             .background(.black)
             .background(WindowLevel(keepOnTop: keepWindowOnTop))
             .contextMenu {

@@ -9,6 +9,7 @@ import WidgetKit
 @Observable
 final class ClockModel {
     private(set) var now = Date.now
+    private(set) var style = SharedSettings.style
 
     @ObservationIgnored private var timer: Timer?
     @ObservationIgnored private var language = SharedSettings.language
@@ -26,16 +27,18 @@ final class ClockModel {
                 MainActor.assumeIsolated { self?.refresh() }
             }
         }
-        // Widgets set to "Same as App" only redraw when asked, so reload them when the language changes.
+        // Widgets only redraw when asked, so reload them when a setting they use changes.
         NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            MainActor.assumeIsolated { self?.languageMayHaveChanged() }
+            MainActor.assumeIsolated { self?.settingsMayHaveChanged() }
         }
     }
 
-    private func languageMayHaveChanged() {
-        let current = SharedSettings.language
-        guard current != language else { return }
-        language = current
+    private func settingsMayHaveChanged() {
+        let language = SharedSettings.language
+        let style = SharedSettings.style
+        guard language != self.language || style != self.style else { return }
+        self.language = language
+        self.style = style
         WidgetCenter.shared.reloadAllTimelines()
     }
 
