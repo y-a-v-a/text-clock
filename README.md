@@ -9,6 +9,12 @@ A macOS desktop widget that tells the time in words, rounded to the nearest five
 
 The language follows your system language by default. Change it per widget with right-click → “Edit ‘Text Clock’”.
 
+## Install
+
+Download `TextClock.zip` from the [latest release](https://github.com/y-a-v-a/text-clock/releases/latest), unzip it, move `TextClock.app` to `/Applications` and launch it once. Then right-click the desktop, choose “Edit Widgets…”, search for “Text Clock”, and drag it onto the desktop.
+
+The app is signed with a Developer ID and notarized, so Gatekeeper opens it without warnings.
+
 ## Requirements
 
 - macOS 14 (Sonoma) or later
