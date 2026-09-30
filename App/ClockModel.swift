@@ -16,6 +16,7 @@ final class ClockModel {
 
     init() {
         schedule()
+        applyAppearance()
         // Timers drift across sleep and manual clock changes, so resync on both.
         let names: [(NotificationCenter, Notification.Name)] = [
             (NSWorkspace.shared.notificationCenter, NSWorkspace.didWakeNotification),
@@ -39,7 +40,17 @@ final class ClockModel {
         guard language != self.language || style != self.style else { return }
         self.language = language
         self.style = style
+        applyAppearance()
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Makes the window chrome, menus and Settings match the clock's light or dark override.
+    private func applyAppearance() {
+        switch style.appearance {
+        case .system: NSApplication.shared.appearance = nil
+        case .light: NSApplication.shared.appearance = NSAppearance(named: .aqua)
+        case .dark: NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
+        }
     }
 
     private func refresh() {

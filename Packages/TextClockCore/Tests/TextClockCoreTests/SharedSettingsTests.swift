@@ -17,20 +17,24 @@ final class SharedSettingsTests: XCTestCase {
     func testStyleDefaultsWhenNothingIsStored() {
         XCTAssertEqual(SharedSettings.style(in: defaults), ClockStyle())
         XCTAssertEqual(ClockStyle().alignment, .left)
+        XCTAssertEqual(ClockStyle().appearance, .system)
     }
 
     func testStyleReadsStoredValues() {
         defaults.set("center", forKey: SharedSettings.alignmentKey)
-        XCTAssertEqual(SharedSettings.style(in: defaults).alignment, .center)
+        defaults.set("dark", forKey: SharedSettings.appearanceKey)
+        XCTAssertEqual(SharedSettings.style(in: defaults), ClockStyle(alignment: .center, appearance: .dark))
     }
 
     func testStyleIgnoresUnknownValues() {
         defaults.set("justified", forKey: SharedSettings.alignmentKey)
+        defaults.set("sepia", forKey: SharedSettings.appearanceKey)
         XCTAssertEqual(SharedSettings.style(in: defaults), ClockStyle())
     }
 
     func testRawValuesAreStable() {
         // These are stored in shared defaults, so renaming a case would reset users' settings.
         XCTAssertEqual(TextAlignmentSetting.allCases.map(\.rawValue), ["left", "center", "right"])
+        XCTAssertEqual(AppearanceSetting.allCases.map(\.rawValue), ["system", "light", "dark"])
     }
 }

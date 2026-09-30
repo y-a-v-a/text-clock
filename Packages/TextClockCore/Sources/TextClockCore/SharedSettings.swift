@@ -37,12 +37,28 @@ public enum TextAlignmentSetting: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
+public enum AppearanceSetting: String, CaseIterable, Identifiable, Sendable {
+    case system, light, dark
+
+    public var id: Self { self }
+
+    public var title: String {
+        switch self {
+        case .system: return "System"
+        case .light: return "Light"
+        case .dark: return "Dark"
+        }
+    }
+}
+
 /// How the phrase is drawn, in the window and the widget alike.
 public struct ClockStyle: Equatable, Sendable {
     public var alignment: TextAlignmentSetting
+    public var appearance: AppearanceSetting
 
-    public init(alignment: TextAlignmentSetting = .left) {
+    public init(alignment: TextAlignmentSetting = .left, appearance: AppearanceSetting = .system) {
         self.alignment = alignment
+        self.appearance = appearance
     }
 }
 
@@ -52,6 +68,7 @@ public enum SharedSettings {
     public static let appGroup = "HFFHH9CJYF.nl.vincentbruijn.TextClock"
     public static let languageKey = "language"
     public static let alignmentKey = "alignment"
+    public static let appearanceKey = "appearance"
 
     public static var defaults: UserDefaults {
         UserDefaults(suiteName: appGroup) ?? .standard
@@ -68,7 +85,8 @@ public enum SharedSettings {
     static func style(in defaults: UserDefaults) -> ClockStyle {
         let fallback = ClockStyle()
         return ClockStyle(
-            alignment: value(forKey: alignmentKey, in: defaults) ?? fallback.alignment
+            alignment: value(forKey: alignmentKey, in: defaults) ?? fallback.alignment,
+            appearance: value(forKey: appearanceKey, in: defaults) ?? fallback.appearance
         )
     }
 

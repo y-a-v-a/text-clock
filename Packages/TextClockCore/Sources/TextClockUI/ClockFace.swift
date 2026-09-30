@@ -1,8 +1,11 @@
 import SwiftUI
 import TextClockCore
 
-/// The phrase laid out and styled according to `ClockStyle`. Callers draw the background.
+/// The phrase laid out and styled according to `ClockStyle`. Callers draw the background
+/// with `ClockStyle.backgroundColor(for:)`.
 public struct ClockFace: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     private let phrase: String
     private let style: ClockStyle
     private let fontSize: CGFloat
@@ -18,10 +21,29 @@ public struct ClockFace: View {
     public var body: some View {
         Text(phrase)
             .font(.system(size: fontSize, weight: .semibold))
-            .foregroundStyle(.white)
+            .foregroundStyle(style.foregroundColor(for: colorScheme))
             .multilineTextAlignment(style.alignment.textAlignment)
             .minimumScaleFactor(minimumScaleFactor)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: style.alignment.frameAlignment)
+    }
+}
+
+extension ClockStyle {
+    /// The scheme to draw in, given the system's.
+    public func colorScheme(system: ColorScheme) -> ColorScheme {
+        switch appearance {
+        case .system: return system
+        case .light: return .light
+        case .dark: return .dark
+        }
+    }
+
+    public func foregroundColor(for system: ColorScheme) -> Color {
+        colorScheme(system: system) == .dark ? .white : .black
+    }
+
+    public func backgroundColor(for system: ColorScheme) -> Color {
+        colorScheme(system: system) == .dark ? .black : .white
     }
 }
 

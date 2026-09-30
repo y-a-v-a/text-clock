@@ -13,6 +13,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.keepWindowOnTop) private var keepWindowOnTop = false
     @AppStorage(SharedSettings.languageKey, store: SharedSettings.defaults) private var language = LanguageSetting.system
     @AppStorage(SharedSettings.alignmentKey, store: SharedSettings.defaults) private var alignment = ClockStyle().alignment
+    @AppStorage(SharedSettings.appearanceKey, store: SharedSettings.defaults) private var appearance = ClockStyle().appearance
 
     var body: some View {
         Form {
@@ -23,6 +24,10 @@ struct SettingsView: View {
             }
             Picker("Alignment", selection: $alignment) {
                 ForEach(TextAlignmentSetting.allCases) { Text($0.title).tag($0) }
+            }
+            .pickerStyle(.segmented)
+            Picker("Appearance", selection: $appearance) {
+                ForEach(AppearanceSetting.allCases) { Text($0.title).tag($0) }
             }
             .pickerStyle(.segmented)
             Section {

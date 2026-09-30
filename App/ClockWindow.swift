@@ -3,9 +3,10 @@ import SwiftUI
 import TextClockCore
 import TextClockUI
 
-/// The phrase in white on black, scaled to fill the window.
+/// The phrase scaled to fill the window.
 struct ClockWindowView: View {
     @Environment(ClockModel.self) private var clock
+    @Environment(\.colorScheme) private var colorScheme
     @AppStorage(SettingsKey.keepWindowOnTop) private var keepWindowOnTop = false
     @AppStorage(SharedSettings.languageKey, store: SharedSettings.defaults) private var language = LanguageSetting.system
 
@@ -19,7 +20,7 @@ struct ClockWindowView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             .frame(minWidth: 180, minHeight: 70)
-            .background(.black)
+            .background(clock.style.backgroundColor(for: colorScheme))
             .background(WindowLevel(keepOnTop: keepWindowOnTop))
             .contextMenu {
                 Toggle("Keep on Top", isOn: $keepWindowOnTop)

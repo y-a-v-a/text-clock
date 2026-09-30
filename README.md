@@ -1,6 +1,6 @@
 # Text Clock
 
-A macOS desktop widget that tells the time in words, rounded to the nearest five minutes, in white on black.
+A macOS desktop widget that tells the time in words, rounded to the nearest five minutes, in white on black (or black on white in Light mode).
 
 ![Text Clock widget on the desktop showing “it’s twenty past one”](docs/screenshot.png)
 
@@ -17,6 +17,7 @@ The app itself also shows the time in words:
 Settings also control how the clock window and the widgets look:
 
 - **Alignment:** left, center or right.
+- **Appearance:** follow the system’s Light or Dark mode, or always use one of them.
 
 ## Install
 

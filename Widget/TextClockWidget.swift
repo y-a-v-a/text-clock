@@ -61,6 +61,7 @@ struct Provider: AppIntentTimelineProvider {
 struct TextClockWidgetView: View {
     let entry: ClockEntry
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
 
     private var fontSize: CGFloat {
         switch family {
@@ -77,7 +78,7 @@ struct TextClockWidgetView: View {
             fontSize: fontSize,
             minimumScaleFactor: 0.5
         )
-            .containerBackground(.black, for: .widget)
+            .containerBackground(entry.style.backgroundColor(for: colorScheme), for: .widget)
     }
 }
 
