@@ -18,6 +18,7 @@ Settings also control how the clock window and the widgets look:
 
 - **Alignment:** left, center or right.
 - **Appearance:** follow the system’s Light or Dark mode, or always use one of them.
+- **Font:** sans serif (SF Pro, the default), serif (New York) or monospaced (SF Mono).
 
 ## Install
 

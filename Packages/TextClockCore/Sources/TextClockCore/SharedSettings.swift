@@ -51,14 +51,31 @@ public enum AppearanceSetting: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
+/// Apple's system typefaces, which ship with every Mac and render in widgets too.
+public enum FontSetting: String, CaseIterable, Identifiable, Sendable {
+    case sans, serif, mono
+
+    public var id: Self { self }
+
+    public var title: String {
+        switch self {
+        case .sans: return "Sans Serif (SF Pro)"
+        case .serif: return "Serif (New York)"
+        case .mono: return "Monospaced (SF Mono)"
+        }
+    }
+}
+
 /// How the phrase is drawn, in the window and the widget alike.
 public struct ClockStyle: Equatable, Sendable {
     public var alignment: TextAlignmentSetting
     public var appearance: AppearanceSetting
+    public var font: FontSetting
 
-    public init(alignment: TextAlignmentSetting = .left, appearance: AppearanceSetting = .system) {
+    public init(alignment: TextAlignmentSetting = .left, appearance: AppearanceSetting = .system, font: FontSetting = .sans) {
         self.alignment = alignment
         self.appearance = appearance
+        self.font = font
     }
 }
 
@@ -69,6 +86,7 @@ public enum SharedSettings {
     public static let languageKey = "language"
     public static let alignmentKey = "alignment"
     public static let appearanceKey = "appearance"
+    public static let fontKey = "font"
 
     public static var defaults: UserDefaults {
         UserDefaults(suiteName: appGroup) ?? .standard
@@ -86,7 +104,8 @@ public enum SharedSettings {
         let fallback = ClockStyle()
         return ClockStyle(
             alignment: value(forKey: alignmentKey, in: defaults) ?? fallback.alignment,
-            appearance: value(forKey: appearanceKey, in: defaults) ?? fallback.appearance
+            appearance: value(forKey: appearanceKey, in: defaults) ?? fallback.appearance,
+            font: value(forKey: fontKey, in: defaults) ?? fallback.font
         )
     }
 

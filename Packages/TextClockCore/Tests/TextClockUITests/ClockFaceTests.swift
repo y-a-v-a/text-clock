@@ -36,4 +36,11 @@ final class ClockFaceTests: XCTestCase {
         XCTAssertEqual(light.foregroundColor(for: .dark), .black)
         XCTAssertEqual(light.backgroundColor(for: .dark), .white)
     }
+
+    func testFontDesign() {
+        // Sans stays the default system font the clock always used.
+        XCTAssertEqual(FontSetting.sans.design, .default)
+        XCTAssertEqual(FontSetting.serif.design, .serif)
+        XCTAssertEqual(FontSetting.mono.design, .monospaced)
+    }
 }

@@ -20,7 +20,7 @@ public struct ClockFace: View {
 
     public var body: some View {
         Text(phrase)
-            .font(.system(size: fontSize, weight: .semibold))
+            .font(.system(size: fontSize, weight: .semibold, design: style.font.design))
             .foregroundStyle(style.foregroundColor(for: colorScheme))
             .multilineTextAlignment(style.alignment.textAlignment)
             .minimumScaleFactor(minimumScaleFactor)
@@ -44,6 +44,16 @@ extension ClockStyle {
 
     public func backgroundColor(for system: ColorScheme) -> Color {
         colorScheme(system: system) == .dark ? .black : .white
+    }
+}
+
+extension FontSetting {
+    public var design: Font.Design {
+        switch self {
+        case .sans: return .default
+        case .serif: return .serif
+        case .mono: return .monospaced
+        }
     }
 }
 

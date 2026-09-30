@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage(SharedSettings.languageKey, store: SharedSettings.defaults) private var language = LanguageSetting.system
     @AppStorage(SharedSettings.alignmentKey, store: SharedSettings.defaults) private var alignment = ClockStyle().alignment
     @AppStorage(SharedSettings.appearanceKey, store: SharedSettings.defaults) private var appearance = ClockStyle().appearance
+    @AppStorage(SharedSettings.fontKey, store: SharedSettings.defaults) private var font = ClockStyle().font
 
     var body: some View {
         Form {
@@ -30,6 +31,9 @@ struct SettingsView: View {
                 ForEach(AppearanceSetting.allCases) { Text($0.title).tag($0) }
             }
             .pickerStyle(.segmented)
+            Picker("Font", selection: $font) {
+                ForEach(FontSetting.allCases) { Text($0.title).tag($0) }
+            }
             Section {
                 Text("Desktop widgets follow this language unless you pick another one with right-click → “Edit ‘Text Clock’”. To add a widget, right-click the desktop, choose “Edit Widgets…” and search for “Text Clock”.")
                     .font(.callout)
