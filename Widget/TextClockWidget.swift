@@ -4,10 +4,11 @@ import TextClockCore
 import WidgetKit
 
 enum LanguageOption: String, AppEnum {
-    case system, dutch, english
+    case app, system, dutch, english
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Language"
     static let caseDisplayRepresentations: [LanguageOption: DisplayRepresentation] = [
+        .app: "Same as App",
         .system: "System",
         .dutch: "Nederlands",
         .english: "English",
@@ -15,6 +16,7 @@ enum LanguageOption: String, AppEnum {
 
     var resolved: ClockLanguage {
         switch self {
+        case .app: return SharedSettings.language.resolved
         case .system: return .systemDefault
         case .dutch: return .dutch
         case .english: return .english
@@ -26,7 +28,7 @@ struct ConfigurationIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = "Text Clock"
     static let description = IntentDescription("Shows the time in words.")
 
-    @Parameter(title: "Language", default: .system)
+    @Parameter(title: "Language", default: .app)
     var language: LanguageOption
 }
 
@@ -37,7 +39,7 @@ struct ClockEntry: TimelineEntry {
 
 struct Provider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> ClockEntry {
-        ClockEntry(date: .now, language: .systemDefault)
+        ClockEntry(date: .now, language: SharedSettings.language.resolved)
     }
 
     func snapshot(for configuration: ConfigurationIntent, in context: Context) async -> ClockEntry {

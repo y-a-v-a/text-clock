@@ -1,6 +1,7 @@
 import AppKit
 import Observation
 import TextClockCore
+import WidgetKit
 
 /// Publishes the current time, updated only when the rounded phrase changes,
 /// so the window and menu bar item redraw every five minutes instead of every second.
@@ -10,6 +11,7 @@ final class ClockModel {
     private(set) var now = Date.now
 
     @ObservationIgnored private var timer: Timer?
+    @ObservationIgnored private var language = SharedSettings.language
 
     init() {
         schedule()
@@ -24,6 +26,17 @@ final class ClockModel {
                 MainActor.assumeIsolated { self?.refresh() }
             }
         }
+        // Widgets set to "Same as App" only redraw when asked, so reload them when the language changes.
+        NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.languageMayHaveChanged() }
+        }
+    }
+
+    private func languageMayHaveChanged() {
+        let current = SharedSettings.language
+        guard current != language else { return }
+        language = current
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func refresh() {

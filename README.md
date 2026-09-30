@@ -7,14 +7,12 @@ A macOS desktop widget that tells the time in words, rounded to the nearest five
 - Dutch: “het is vijf voor half twaalf”
 - English: “it’s quarter to ten”
 
-The language follows your system language by default. Change it per widget with right-click → “Edit ‘Text Clock’”.
+The language is set in the app’s Settings (System, Nederlands or English) and widgets follow it. To give one widget its own language, right-click it → “Edit ‘Text Clock’” and change “Same as App” to another option.
 
 The app itself also shows the time in words:
 
 - **Menu bar:** the phrase appears among the status items (sound, Bluetooth, …). Turn it off under Settings (⌘,) or from its own menu.
 - **Clock window:** a resizable window whose text scales to fit. Turn on “Keep on Top” (Window menu, ⌥⌘T, or right-click the window) to float it above other windows on every Space, like Activity Monitor’s CPU window.
-
-The app’s language is set in Settings, separately from the widget’s.
 
 ## Install
 
@@ -37,7 +35,7 @@ open TextClock.xcodeproj
 
 Run the `TextClock` scheme once (⌘R). macOS only lists a widget after its host app has launched. Then right-click the desktop, choose “Edit Widgets…”, search for “Text Clock”, and drag it onto the desktop.
 
-Signing uses the team set in `DEVELOPMENT_TEAM` in `project.yml`. WidgetKit won’t render an ad-hoc signed extension (it shows grey placeholder bars), so to build it yourself, change that team and the `nl.vincentbruijn` bundle identifiers to your own.
+Signing uses the team set in `DEVELOPMENT_TEAM` in `project.yml`. The app and widget share settings through the App Group `HFFHH9CJYF.nl.vincentbruijn.TextClock`, which is prefixed with that team ID. WidgetKit won’t render an ad-hoc signed extension (it shows grey placeholder bars), so to build it yourself, change that team, the App Group (in `project.yml` and `SharedSettings.swift`) and the `nl.vincentbruijn` bundle identifiers to your own.
 
 To install it permanently, archive or copy the built `TextClock.app` to `/Applications` and launch it once.
 
@@ -58,7 +56,7 @@ cd Packages/TextClockCore && swift test
 
 ## Adding a language
 
-Add a case to `ClockLanguage` and a matching phrase function in `TextClock.swift`, then add the case to `LanguageOption` in the widget.
+Add a case to `ClockLanguage` and a matching phrase function in `TextClock.swift`, then add the case to `LanguageSetting` in `SharedSettings.swift` and to `LanguageOption` in the widget.
 
 ## Notes
 

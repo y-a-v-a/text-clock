@@ -6,7 +6,7 @@ import TextClockCore
 struct ClockWindowView: View {
     @Environment(ClockModel.self) private var clock
     @AppStorage(SettingsKey.keepWindowOnTop) private var keepWindowOnTop = false
-    @AppStorage(SettingsKey.language) private var language = LanguageSetting.system
+    @AppStorage(SharedSettings.languageKey, store: SharedSettings.defaults) private var language = LanguageSetting.system
 
     var body: some View {
         Text(TextClock.phrase(for: clock.now, language: language.resolved))
