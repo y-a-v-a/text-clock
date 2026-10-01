@@ -10,3 +10,6 @@ Widget/*.entitlements
 DerivedData/
 xcuserdata/
 .DS_Store
+
+# Release builds (scripts/release.sh)
+build/
