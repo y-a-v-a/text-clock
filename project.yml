@@ -6,8 +6,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "1.0"
-    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "1.1"
+    CURRENT_PROJECT_VERSION: "2"
     CODE_SIGN_STYLE: Automatic
     # WidgetKit will not render ad-hoc signed extensions, so sign with a real team.
     DEVELOPMENT_TEAM: HFFHH9CJYF
@@ -22,11 +22,15 @@ targets:
     sources: [App]
     dependencies:
       - package: TextClockCore
+      - package: TextClockCore
+        product: TextClockUI
       - target: TextClockWidget
     info:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: Text Clock
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSApplicationCategoryType: public.app-category.utilities
     entitlements:
       path: App/TextClock.entitlements
@@ -43,12 +47,16 @@ targets:
     sources: [Widget]
     dependencies:
       - package: TextClockCore
+      - package: TextClockCore
+        product: TextClockUI
       - sdk: WidgetKit.framework
       - sdk: SwiftUI.framework
     info:
       path: Widget/Info.plist
       properties:
         CFBundleDisplayName: Text Clock
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:

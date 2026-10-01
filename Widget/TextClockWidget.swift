@@ -1,6 +1,7 @@
 import AppIntents
 import SwiftUI
 import TextClockCore
+import TextClockUI
 import WidgetKit
 
 enum LanguageOption: String, AppEnum {
@@ -35,29 +36,32 @@ struct ConfigurationIntent: WidgetConfigurationIntent {
 struct ClockEntry: TimelineEntry {
     let date: Date
     let language: ClockLanguage
+    let style: ClockStyle
 }
 
 struct Provider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> ClockEntry {
-        ClockEntry(date: .now, language: SharedSettings.language.resolved)
+        ClockEntry(date: .now, language: SharedSettings.language.resolved, style: SharedSettings.style)
     }
 
     func snapshot(for configuration: ConfigurationIntent, in context: Context) async -> ClockEntry {
-        ClockEntry(date: .now, language: configuration.language.resolved)
+        ClockEntry(date: .now, language: configuration.language.resolved, style: SharedSettings.style)
     }
 
     func timeline(for configuration: ConfigurationIntent, in context: Context) async -> Timeline<ClockEntry> {
         let language = configuration.language.resolved
+        let style = SharedSettings.style
         let now = Date.now
         // One entry per phrase change for the next 12 hours; WidgetKit asks again afterwards.
         let dates = [now] + TextClock.changeDates(after: now, count: 12 * 12)
-        return Timeline(entries: dates.map { ClockEntry(date: $0, language: language) }, policy: .atEnd)
+        return Timeline(entries: dates.map { ClockEntry(date: $0, language: language, style: style) }, policy: .atEnd)
     }
 }
 
 struct TextClockWidgetView: View {
     let entry: ClockEntry
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
 
     private var fontSize: CGFloat {
         switch family {
@@ -68,13 +72,13 @@ struct TextClockWidgetView: View {
     }
 
     var body: some View {
-        Text(TextClock.phrase(for: entry.date, language: entry.language))
-            .font(.system(size: fontSize, weight: .semibold))
-            .foregroundStyle(.white)
-            .multilineTextAlignment(.leading)
-            .minimumScaleFactor(0.5)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .containerBackground(.black, for: .widget)
+        ClockFace(
+            phrase: TextClock.phrase(for: entry.date, language: entry.language),
+            style: entry.style,
+            fontSize: fontSize,
+            minimumScaleFactor: 0.5
+        )
+            .containerBackground(entry.style.backgroundColor(for: colorScheme), for: .widget)
     }
 }
 

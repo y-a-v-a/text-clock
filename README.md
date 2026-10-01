@@ -1,6 +1,6 @@
 # Text Clock
 
-A macOS desktop widget that tells the time in words, rounded to the nearest five minutes, in white on black.
+A macOS desktop widget that tells the time in words, rounded to the nearest five minutes, in white on black (or black on white in Light mode).
 
 ![Text Clock widget on the desktop showing “it’s twenty past one”](docs/screenshot.png)
 
@@ -13,6 +13,12 @@ The app itself also shows the time in words:
 
 - **Menu bar:** the phrase appears among the status items (sound, Bluetooth, …). Turn it off under Settings (⌘,) or from its own menu.
 - **Clock window:** a resizable window whose text scales to fit. Turn on “Keep on Top” (Window menu, ⌥⌘T, or right-click the window) to float it above other windows on every Space, like Activity Monitor’s CPU window.
+
+Settings also control how the clock window and the widgets look:
+
+- **Alignment:** left, center or right.
+- **Appearance:** follow the system’s Light or Dark mode, or always use one of them.
+- **Font:** sans serif (SF Pro, the default), serif (New York) or monospaced (SF Mono).
 
 ## Install
 
@@ -29,15 +35,23 @@ The app is signed with a Developer ID and notarized, so Gatekeeper opens it with
 ## Build and run
 
 ```sh
-xcodegen generate
-open TextClock.xcodeproj
+scripts/build.sh --run
 ```
 
-Run the `TextClock` scheme once (⌘R). macOS only lists a widget after its host app has launched. Then right-click the desktop, choose “Edit Widgets…”, search for “Text Clock”, and drag it onto the desktop.
+This generates the Xcode project, builds a Debug app into `DerivedData/` and launches it. macOS only lists a widget after its host app has launched. Then right-click the desktop, choose “Edit Widgets…”, search for “Text Clock”, and drag it onto the desktop.
 
 Signing uses the team set in `DEVELOPMENT_TEAM` in `project.yml`. The app and widget share settings through the App Group `HFFHH9CJYF.nl.vincentbruijn.TextClock`, which is prefixed with that team ID. WidgetKit won’t render an ad-hoc signed extension (it shows grey placeholder bars), so to build it yourself, change that team, the App Group (in `project.yml` and `SharedSettings.swift`) and the `nl.vincentbruijn` bundle identifiers to your own.
 
-To install it permanently, archive or copy the built `TextClock.app` to `/Applications` and launch it once.
+To work in Xcode instead, run `xcodegen generate`, open `TextClock.xcodeproj` and run the `TextClock` scheme (⌘R).
+
+### Release
+
+```sh
+scripts/release.sh            # build/TextClock.zip: Developer ID signed, notarized and stapled
+scripts/release.sh --publish  # also creates the GitHub release v<version> with the zip
+```
+
+Notarizing uses the notarytool keychain profile in `NOTARY_PROFILE` (default `mould-notary`); the script’s header shows how to create one. Bump `MARKETING_VERSION` and `CURRENT_PROJECT_VERSION` in `project.yml` before a new release.
 
 ## Layout
 
@@ -51,7 +65,7 @@ To install it permanently, archive or copy the built `TextClock.app` to `/Applic
 ## Tests
 
 ```sh
-cd Packages/TextClockCore && swift test
+scripts/test.sh
 ```
 
 ## Adding a language
