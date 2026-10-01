@@ -24,6 +24,25 @@ ZIP="$BUILD/TextClock.zip"
 PUBLISH=false
 [ "${1:-}" = "--publish" ] && PUBLISH=true
 
+LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
+
+# macOS registers every TextClock.app it sees and may run the widget from any of them. If that
+# copy is later deleted (as the next release does with build/), the widget stops loading. So
+# keep the copies in build/ unregistered, then re-register the app that's actually used:
+# unregistering also drops the App Intents metadata the widget needs to read its configuration.
+forget_build_copies() {
+  find "$BUILD" -name TextClock.app -type d -prune 2>/dev/null | while read -r app; do
+    pluginkit -r "$app/Contents/PlugIns/TextClockWidget.appex" 2>/dev/null || true
+    "$LSREGISTER" -u "$app" 2>/dev/null || true
+  done
+  for app in /Applications/TextClock.app DerivedData/Build/Products/Debug/TextClock.app; do
+    if [ -d "$app" ]; then
+      "$LSREGISTER" -f -R "$app"
+      break
+    fi
+  done
+}
+
 command -v xcodegen >/dev/null || { echo "XcodeGen is missing; install it with 'brew install xcodegen'." >&2; exit 1; }
 if $PUBLISH && [ -n "$(git status --porcelain)" ]; then
   echo "The working tree has uncommitted changes; commit them before publishing a release." >&2
@@ -37,6 +56,7 @@ xcrun notarytool history --keychain-profile "$PROFILE" >/dev/null 2>&1 || {
   exit 1
 }
 
+forget_build_copies
 rm -rf "$BUILD"
 mkdir -p "$BUILD"
 xcodegen generate --quiet
@@ -53,7 +73,7 @@ EOF
 
 echo "Archiving..."
 xcodebuild -project TextClock.xcodeproj -scheme TextClock -configuration Release \
-  -archivePath "$BUILD/TextClock.xcarchive" -allowProvisioningUpdates -quiet archive
+  -archivePath "$BUILD/TextClock.xcarchive" -derivedDataPath "$BUILD/DerivedData" -allowProvisioningUpdates -quiet archive
 xcodebuild -exportArchive -archivePath "$BUILD/TextClock.xcarchive" \
   -exportOptionsPlist "$BUILD/ExportOptions.plist" -exportPath "$BUILD" -allowProvisioningUpdates -quiet
 codesign --verify --deep --strict "$APP"
@@ -68,6 +88,7 @@ xcrun stapler staple "$APP"
 rm -f "$ZIP"
 ditto -c -k --keepParent "$APP" "$ZIP"
 spctl --assess --type execute --verbose "$APP"
+forget_build_copies
 
 VERSION="$(plutil -extract CFBundleShortVersionString raw "$APP/Contents/Info.plist")"
 echo "Notarized and stapled: $APP (version $VERSION)"
