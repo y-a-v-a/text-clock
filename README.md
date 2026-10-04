@@ -59,7 +59,7 @@ Notarizing uses the notarytool keychain profile in `NOTARY_PROFILE` (default `mo
 | --- | --- |
 | `Packages/TextClockCore` | Phrasing and rounding logic, as a Swift package with tests |
 | `Widget/` | WidgetKit extension (small, medium, large) |
-| `App/` | Host app: clock window, menu bar item and settings |
+| `App/` | Host app: clock window, menu bar item, settings and icon (`AppIcon.icon`, edit it in Icon Composer) |
 | `project.yml` | XcodeGen project spec |
 
 ## Tests
