@@ -12,20 +12,29 @@ final class ClockModel {
     private(set) var style = SharedSettings.style
 
     @ObservationIgnored private var timer: Timer?
+    @ObservationIgnored private var widgetReload: Task<Void, Never>?
     @ObservationIgnored private var language = SharedSettings.language
 
     init() {
         schedule()
         applyAppearance()
-        // Timers drift across sleep and manual clock changes, so resync on both.
+        // Timers drift across sleep and manual clock changes, and the display, screen saver,
+        // lock screen or another user's session can hide the clock for hours, so resync after each.
+        let workspace = NSWorkspace.shared.notificationCenter
+        let distributed = DistributedNotificationCenter.default()
         let names: [(NotificationCenter, Notification.Name)] = [
-            (NSWorkspace.shared.notificationCenter, NSWorkspace.didWakeNotification),
+            (workspace, NSWorkspace.didWakeNotification),
+            (workspace, NSWorkspace.screensDidWakeNotification),
+            (workspace, NSWorkspace.sessionDidBecomeActiveNotification),
+            // Undocumented, but posted by the screen saver and loginwindow for many macOS releases.
+            (distributed, Notification.Name("com.apple.screensaver.didstop")),
+            (distributed, Notification.Name("com.apple.screenIsUnlocked")),
             (NotificationCenter.default, .NSSystemClockDidChange),
             (NotificationCenter.default, .NSSystemTimeZoneDidChange),
         ]
         for (center, name) in names {
             center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
-                MainActor.assumeIsolated { self?.refresh() }
+                MainActor.assumeIsolated { self?.resync() }
             }
         }
         // Widgets only redraw when asked, so reload them when a setting they use changes.
@@ -50,6 +59,19 @@ final class ClockModel {
         case .system: NSApplication.shared.appearance = nil
         case .light: NSApplication.shared.appearance = NSAppearance(named: .aqua)
         case .dark: NSApplication.shared.appearance = NSAppearance(named: .darkAqua)
+        }
+    }
+
+    /// Redraws the clock now, and the widgets too: their timeline may have run out during a long sleep,
+    /// and entries drawn before a time zone change can show the old hour.
+    private func resync() {
+        refresh()
+        // A wake posts several of these at once; reload the widgets once for the lot to spare their daily budget.
+        widgetReload?.cancel()
+        widgetReload = Task {
+            try? await Task.sleep(for: .seconds(2))
+            guard !Task.isCancelled else { return }
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 
